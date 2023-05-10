@@ -1,53 +1,64 @@
+import random
 import math
 
-def isnotprime(n) :
-  for i in range (2,n) :
-    if n % i == 0 :
-      return True 
-  return False
+# Generate random prime numbers
+def generate_primes():
+    primes = []
+    while len(primes) < 2:
+        n = random.randint(100, 1000)
+        if is_prime(n):
+            primes.append(n)
+    return primes
 
-def modularInv(x,n):
-  for i in range(1,n):
-    if( (x*i) % n == 1):
-      return i
-  return -1
+# Check if a number is prime
+def is_prime(n):
+    if n <= 1:
+        return False
+    for i in range(2, int(math.sqrt(n))+1):
+        if n % i == 0:
+            return False
+    return True
 
-p = int(input("Enter first prime number :"))
-while(isnotprime(p)) :
-  print(p,'is not a prime number')
-  p = int(input("Enter first prime number :"))
+# Calculate the greatest common divisor
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
 
-q = int(input("Enter Second prime number :"))
-while(True) :
-  if(p == q):
-    print('Both numbers cannot be equal')
-    q = int(input("Enter Second prime number :"))
-  elif (isnotprime(q)) :
-    print(q,'is not a prime number')
-    q = int(input("Enter Second prime number :"))
-  else :
-    break
+# Calculate the modular inverse
+def mod_inverse(a, m):
+    for x in range(1, m):
+        if (a * x) % m == 1:
+            return x
+    return None
 
-n = p * q
-phi = (p - 1) * (q - 1)
+# Encrypt a message
+def encrypt(message, public_key):
+    e, n = public_key
+    cipher = [(ord(char) ** e) % n for char in message]
+    return cipher
 
-e = 2
-while math.gcd(e,phi) != 1 :
-  e += 1
-  if e >= phi :
-    print(e," greater then phi ",phi)
-    break;
+# Decrypt a message
+def decrypt(cipher, private_key):
+    d, n = private_key
+    message = ''.join([chr((char ** d) % n) for char in cipher])
+    return message
 
-d = modularInv(e,phi)
+# Generate the public and private keys
+def generate_keys():
+    p, q = generate_primes()
+    n = p * q
+    phi_n = (p-1) * (q-1)
+    e = random.randint(1, phi_n)
+    while gcd(e, phi_n) != 1:
+        e = random.randint(1, phi_n)
+    d = mod_inverse(e, phi_n)
+    return ((e, n), (d, n))
 
-M = int(input("Enter plain text : "))
-C = math.pow(M,e) 
-C = C % n 
-
-print('public key : (' ,e,',',n,')')
-print('Cipher text : ',C)
-
-D = math.pow(C,d)
-D = D % n
-print('Private key : (' ,d,',',n,')')
-print('Decrypted text : ',D)
+message = input("Enter message\n")
+public_key, private_key = generate_keys()
+cipher = encrypt(message, public_key)
+decrypted_message = decrypt(cipher, private_key)
+print("Original message: ", message)
+print("Encrypted message: ", cipher)
+print("Decrypted message: ", decrypted_message)
