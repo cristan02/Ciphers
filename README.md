@@ -1,4 +1,4 @@
-# ciphers
+# Ciphers
 This repository contains various cipher algorithms implemented in the C and python programming language. The ciphers included in this repository are commonly used for encryption and decryption purposes.
 ## Contains
   1. Caesar cipher
