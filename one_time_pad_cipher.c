@@ -54,5 +54,5 @@ int main()
             text[i] = ((text[i] - '0') - (key[i] - '0') + 10 ) % 10 + '0';
     }
 
-    printf("\n\nDecrypted string : %s",text)
+    printf("\n\nDecrypted string : %s",text);
 }
